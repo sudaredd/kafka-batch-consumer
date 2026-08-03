@@ -32,3 +32,20 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
     restart: unless-stopped
+
+  init-kafka:
+    image: apache/kafka:latest
+    container_name: init-kafka
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: >
+      "
+      # Wait for Kafka broker to start
+      sleep 3
+      echo 'Creating Kafka topics...'
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic job-status --partitions 3 --replication-factor 1
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic job-status-custom-dlt --partitions 3 --replication-factor 1
+      echo 'Kafka topics created successfully:'
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list
+      "
