@@ -67,6 +67,23 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
+    // ── Topic Declarations (Spring KafkaAdmin auto-creates on startup) ──
+    @Bean
+    public org.apache.kafka.clients.admin.NewTopic jobStatusTopic() {
+        return org.springframework.kafka.config.TopicBuilder.name("job-status")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public org.apache.kafka.clients.admin.NewTopic customDltTopic() {
+        return org.springframework.kafka.config.TopicBuilder.name("job-status-custom-dlt")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
     // ── ProducerFactory & KafkaTemplate for DLT publishing ──────────────────────
     @Bean
     public org.springframework.kafka.core.ProducerFactory<String, Object> producerFactory() {
