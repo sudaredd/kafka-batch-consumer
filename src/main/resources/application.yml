@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: kafka-batch-consumer
+
+  # ── PostgreSQL ──────────────────────────────────────────────
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jobdb
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: always          # runs schema.sql on startup
+
+  # ── Kafka (boot-level defaults) ─────────────────────────────
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+    consumer:
+      group-id: job-status-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
